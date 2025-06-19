@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cnx-ecommerce
+spec:
+  selector:
+    app: cnx-ecommerce
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort  # So you can access from browser
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cnx-ecommerce
+spec:
+  selector:
+    matchLabels:
+      app: cnx-ecommerce
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cnx-ecommerce
+    spec:
+      containers:
+        - name: cnx-ecommerce
+          image: cnx-ecommerce:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/cnxecommerce
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: Password@123
